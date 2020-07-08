@@ -4,9 +4,9 @@ This repository includes a reference implementation of the AIA client on top of 
 BT Prototyping Kit (CY8CPROTO-062-4343W) based on [Cypress Amazon FreeRTOS Project](https://github.com/cypresssemiconductorco/amazon-freertos).
 
 # Contents of this repository
-`aia/`: contains the reference AIA client implementation, including crypto related utility functions. It also contains a header file `aia_platform.h`, which describes the platform specific APIs that need to be implemented in order to run the AIA application.
-`CY8CPROTO-062-4343W.patch`: a patch file generated aganist a release version of Cypress Amazon FreeRTOS project. It can be applied to set up an AIA demo project that runs on CY8CPROTO-062-4343W board. Details can be found in the **Set up the demo on CY8CPROTO-062-4343W** section.
-`LICENSE`: MIT license
+`aia/`: contains the reference AIA client implementation, including crypto related utility functions. It also contains a header file `aia_platform.h`, which describes the platform specific APIs that need to be implemented in order to run the AIA application.  
+`CY8CPROTO-062-4343W.patch`: a patch file generated aganist a release version of Cypress Amazon FreeRTOS project. It can be applied to set up an AIA demo project that runs on CY8CPROTO-062-4343W board. Details can be found in the **Set up the demo on CY8CPROTO-062-4343W** section.  
+`LICENSE`: MIT license.  
 `README.md`: this file.
 
 # Set up the demo on CY8CPROTO-062-4343W
