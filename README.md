@@ -1,11 +1,15 @@
+
+# MCU demo for AVS
+
 [Placeholder for general description of AIA and the purpose of this repo?]
 
-This repository includes a reference implementation of the AIA client on top of [Amazon FreeRTOS](https://aws.amazon.com/freertos/). The implementation is compliant with [AWS MQTT (v2.0.0) C SDK API](https://docs.aws.amazon.com/freertos/latest/lib-ref/c-sdk/mqtt/index.html). The repository also includes a demonstration of how the AIA client can be used on Cypress PSoC 6 Wi-Fi
+This repository includes an Arm-provided example implementation of the [Alexa Voice Service Integration for AWS IoT Core](https://docs.aws.amazon.com/iot/latest/developerguide/avs-integration-aws-iot.html) (AIA) client on top of [Amazon FreeRTOS](https://aws.amazon.com/freertos/) for use with [Arm Cortex-M Series Processors](https://developer.arm.com/ip-products/processors/cortex-m). The implementation is compliant with [AWS MQTT (v2.0.0) C SDK API](https://docs.aws.amazon.com/freertos/latest/lib-ref/c-sdk/mqtt/index.html). The repository also includes a demonstration of how the AIA client can be used on Cypress PSoC 6 Wi-Fi
 BT Prototyping Kit (CY8CPROTO-062-4343W) based on [Cypress Amazon FreeRTOS Project](https://github.com/cypresssemiconductorco/amazon-freertos).
 
 # Contents of this repository
-`aia/`: contains the reference AIA client implementation, including crypto related utility functions. It also contains a header file `aia_platform.h`, which describes the platform specific APIs that need to be implemented in order to run the AIA application.  
-`CY8CPROTO-062-4343W.patch`: a patch file generated aganist a release version of Cypress Amazon FreeRTOS project. It can be applied to set up an AIA demo project that runs on CY8CPROTO-062-4343W board. Details can be found in the **Set up the demo on CY8CPROTO-062-4343W** section.  
+`aia/`: contains the reference AIA client implementation. It also contains a header file `aia_platform.h`, which describes the platform specific APIs that need to be implemented in order to run the AIA application.  
+`demo/`: contains reference files for running the demo on CY8CPROTO-062-4343W. Currently it contains two files: `aia_demo.c` which provides an entry point for the AIA demo in the Amazon FreeRTOS project; `aia_platform.c` which gives a reference design for platform specific APIs required by the AIA client.  
+`patch/CY8CPROTO-062-4343W.patch`: a patch file generated aganist a release version of Cypress Amazon FreeRTOS project. It can be applied to set up an AIA demo project that runs on CY8CPROTO-062-4343W board. Details can be found in the **Set up the demo on CY8CPROTO-062-4343W** section. Note that the patch file already includes the files in the `demo/` directory thus there's no need to add them separately to the project to reproduce the demo.  
 `LICENSE`: MIT license.  
 `README.md`: this file.
 
@@ -35,12 +39,13 @@ After you have tweaked your board, plug a USB cable into the KitProg3 USB connec
 ## Credentials
  1. You should have set up your AWS account and registered your device with AWS IoT before running the demo. Refer to [First Steps to Get Started with Amazon FreeRTOS](https://docs.aws.amazon.com/freertos/latest/userguide/freertos-prereqs.html) to generate required credentials. Fill in these credentials as well as your Wi-Fi configurations in aws_clientcredential.h and aws_clientcredential_keys.h as instructed.
  2. Specify your AWS account ID for the `aiaconfigAWS_ACCOUNT_ID` macro which can be found in `demos/aia/aia_client_config.h`.
- 3. AIA and the end device require a shared secret for encrypting and decrypting messages. You must register to the secure HTTP/1.1 endpoint exposed by AIA after you have completed a standard AVS LWA authentication flow. Refer to [Registration](https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/avs-for-aws-iot-registration.html) for more detailed information. Since the current AIA client reference design in this repository does not include a HTTP/1.1 protocol implementation, you need to make this registration on your host computer with tools capable of HTTP transactions, e.g. **curl**. Before you do that, you also need to generate a pair of public/private keys using AES256-GCM and provide the public key during the AIA registration process. After the registration succeeds, you will get the server-side public key. Using your public/private keys and the server-side public key, the application is able to deduce the shared secret for message encryption/decryption. Specify these three keys for the following macros that can be found in `demos/aia/aia_client_config.h`:
+ 3. AIA and the end device require a shared secret for encrypting and decrypting messages. You must register to the secure HTTP/1.1 endpoint exposed by AIA after you have completed a standard AVS LWA authentication flow. Refer to [Registration](https://developer.amazon.com/en-US/docs/alexa/alexa-voice-service/avs-for-aws-iot-registration.html) for more detailed information. Since the current AIA client reference design in this repository does not include a HTTP/1.1 protocol implementation, you need to make this registration on your host computer with tools capable of HTTP transactions, e.g. **curl** (Example usage: `curl --http1.1 -H <header> -d <data> <URL>`). Before you do that, you also need to generate a pair of public/private keys using AES256-GCM and provide the public key during the AIA registration process. After the registration succeeds, you will get the server-side public key. Using your public/private keys and the server-side public key, the application is able to deduce the shared secret for message encryption/decryption. Specify these three keys for the following macros that can be found in `demos/aia/aia_client_config.h`:
     ```
     aiaconfigCLIENT_PUBLIC_KEY
     aiaconfigCLIENT_PRIVATE_KEY
     aiaconfigPEER_PUBLIC_KEY
     ```
+ 4. You will also get the root topic for AIA-specific topics if the registration is successful. You can find its value in the "topicRoot" field from the HTTP success response. Fill in the `aiaconfigTOPIC_ROOT` macro in `demos/aia/aia_client_config.h` with this value.
 
 ## Run the demo
 Build the project and program the board, you should be able to run the demo.
@@ -48,3 +53,11 @@ You are able to see logs from the console if you have set up the UART correctly 
 
 ## Known issues
 The lwIP library includes a header file 'api.h', while the Opus library includes 'API.h'. It's not an issue on Linux hosts. However, since Windows is case insensitive in terms of file systems, the user needs to specify the path of these two header files in the source files that include them, to ensure the correct one is included.
+
+# License
+
+The software is provided under the [MIT](https://spdx.org/licenses/MIT.html) license. See [LICENSE](LICENSE) for more information. Contributions to this project are accepted under the same license.
+
+# Maintenance and issues
+
+Maintenance for this example will be limited. Please feel free to raise an [issue on GitHub](https://github.com/ARM-software/MCU-demo-for-AVS/issues) to report bugs or start discussions about enhancements.
