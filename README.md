@@ -24,7 +24,7 @@ The demo requires an external audio output module, e.g. [Digilent Pmod I2S2](htt
 After you have tweaked your board, plug a USB cable into the KitProg3 USB connector (J8) to connect the board to your host computer and you are all set to go.
 
 ## Project setup
- 1. Download [Cypress amazon-freertos 201908.00 release](https://github.com/cypresssemiconductorco/amazon-freertos/releases/tag/201908-MTBAFR1941) and extract it to your local filesystem.
+ 1. Download [Cypress amazon-freertos 201908.00 release](https://github.com/cypresssemiconductorco/amazon-freertos/releases/tag/201908-MTBAFR1941) and extract it to your local filesystem. (IMPORTANT: There is a defect in this release which might brick your board. Refer to **Notice** section for more information.)
  2. From the top-level folder `amazon-freertos-xxx`, create a `demos/aia` folder.
  3. Copy the files in the `aia/` folder and the `demo/` folder in this repository to the `demos/aia` folder just created.
  4. Download [opus 1.3.1 source code](https://archive.mozilla.org/pub/opus/opus-1.3.1.tar.gz), extract it from the top-level folder with the following command:
@@ -68,6 +68,9 @@ Please apply `opus_WINDOWS_MAC.patch` in `patch/` folder in this repository if y
   In such case, please specify the correct gcc path by either:
   - setting CY_COMPILER_DEFAULT_DIR in `vendors/cypress/psoc6/psoc6make/make/core/main.mk`.
   - setting CY_COMPILER_DIR and CY_COMPILER_GCC_ARM_DIR in `projects/cypress/CY8CPROTO_062_4343W/mtb/aws_demos/Makefile`.
+
+## Notice
+The BSP in Cypress amazon-freertos 201908.00 release clears TOC2_FLAGS register in SFlash. This will disable SWJ pins if the MCU is programmed with SFlash programming allowed. As a result, your board would be unable to reprogram with KitProg3. `patch/CY8CPROTO-062-4343W.patch` includes the change to set TOC2_FLAGS to the correct value. DO NOT directly program this release into your board without applying the patch, unless you have prohibited SFlash Erase/Program in debugger configurations.
 
 # License
 
